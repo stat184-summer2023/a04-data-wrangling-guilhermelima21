@@ -39,6 +39,8 @@ data("HELPmiss", package = "mosaicData")
 - investigate by searching R help documentation
 - there's a research paper cited where additional detail is provided
 
+This study comprised of 470 participants who spoke English & Spanish, and reported Alcohol, Cocaine, or Heroin as a substance of use. The study aimed to collect data on many variables such as age, sex, housing status, substance used, days since substance use post detox, mental & physical scores, number of drinks, treatment status, and many more from subjects in the Boston area. The study was conducted on September 13, 2016; and subjects were "interviewed at baseline during their detoxification stay and follow-up interviews were undertaken every 6 months for 2 years".
+The description notes that inelligible subjects for the study included patients that planned to leave the Boston area, patients who did not provide contact information, patients who were pregnant, patients with dementia, or patients who had established primary care relationships. 
 
 
 ## Task 2: Basic Summaries 
@@ -50,22 +52,22 @@ data("HELPmiss", package = "mosaicData")
 ```{r}
 count <- HELPmiss %>% summarize(count = n())
 ```
+number of cases = 470
 
 2. total number of times in the past 6 months entered a detox program (measured at baseline) for all the people in `HELPmiss`. 
 
 ```{r}
 detox_times <- HELPmiss %>% summarize(detox_times = sum(e2b, na.rm = TRUE))
 ```
-
+sum of times entered a detox program = 549
 
 3. mean time (in days) to first use of any substance post-detox for all the people in `HELPmiss`
 
 
 ```{r}
 mtime <- HELPmiss %>% summarize(mtime = mean(daysanysub, na.rm = TRUE))
-
 ```
-
+mean time in days to first use of a substance = 75.1
 
 
 ## Task 3: Group Summaries  
@@ -84,32 +86,50 @@ mtime <- HELPmiss %>% summarize(mtime = mean(daysanysub, na.rm = TRUE))
 malevsfemale <- HELPmiss %>% group_by(sex) %>%summarize(count = n(), detox_times = sum(e2b, na.rm = TRUE), mtime = mean(daysanysub, na.rm = TRUE))
 
 ```
+For 359 males the total number of times they entered a detox program is 457 with a mean time of 72.60513 days for first substance use  post detox. 
+For 111 females the total number of times they entered a detox program is 92 with a mean time of 83.77193 days for first substance use  post detox.
 
 ### homeless or not
 ```{r}
 homeless <- HELPmiss %>% group_by(homeless) %>%summarize(count = n(), detox_times = sum(e2b, na.rm = TRUE), mtime = mean(daysanysub, na.rm = TRUE))
 
 ```
-
+For 251 housed people the total number of times they entered a detox program is 160 with a mean time of 77.10078 days for first substance use  post detox. 
+For 219 homeless people the total number of times they entered a detox program is 389 with a mean time of 73.06504 days for first substance use  post detox.
 
 ### substance
 ```{r}
 substance <- HELPmiss %>% group_by(substance) %>%summarize(count = n(), detox_times = sum(e2b, na.rm = TRUE), mtime = mean(daysanysub, na.rm = TRUE))
 
 ```
+For 185 people that used alcohol the total number of times they entered a detox program is 242 with a mean time of 78.49495 days for first substance use  post detox. 
+For 156 people that used cocaine the total number of times they entered a detox program is 98 with a mean time of 86.67033 days for first substance use  post detox.
+For 128 people that used cocaine the total number of times they entered a detox program is 208 with a mean time of 52.82258 days for first substance use  post detox.
+There is 1 missing value for substance in the dataset. 
+
 
 ### homeless versus housed broken down by sex
 ```{r}
 homeless_by_sex <- HELPmiss %>% group_by(homeless,sex) %>% summarize(count = n(), detox_times = sum(e2b, na.rm = TRUE), mtime = mean(daysanysub, na.rm = TRUE))
 
 ```
+For 182 housed males the total number of times they entered a detox program is 110 with a mean time of 74.30851 days for first substance use  post detox. 
+For 69 housed females the total number of times they entered a detox program is 50 with a mean time of 84.60000 days for first substance use  post detox.
+For 177 homeless males the total number of times they entered a detox program is 347 with a mean time of 71.01980 days for first substance use  post detox. 
+For 42 homeless females the total number of times they entered a detox program is 42 with a mean time of 82.45455 days for first substance use  post detox.
 
 ### homeless versus housed broken down by substance
 ```{r}
 homeless_by_sub <- HELPmiss %>% group_by(homeless,substance) %>%summarize(count = n(), detox_times = sum(e2b, na.rm = TRUE), mtime = mean(daysanysub, na.rm = TRUE))
 
 ```
-
+For 76 housed alcohol users the total number of times they entered a detox program is 34 with a mean time of 104.79487 days for first substance use  post detox. 
+For 96 housed cocaine users the total number of times they entered a detox program is 37 with a mean time of 81.05556 days for first substance use  post detox.
+For 79 housed heroin users the total number of times they entered a detox program is 89 with a mean time of 41.16667 days for first substance use  post detox. 
+For 109 homeless alcohol users the total number of times they entered a detox program is 208 with a mean time of 61.40000 days for first substance use  post detox.
+For 60 homeless cocaine users the total number of times they entered a detox program is 61 with a mean time of 94.86486 days for first substance use  post detox.
+For 49 homeless heroin users the total number of times they entered a detox program is 119 with a mean time of 68.96154 days for first substance use  post detox.
+There is one missing value for substance in the dataset. 
 
 
 ## Task 4: Data Visualization & Observations
@@ -120,9 +140,17 @@ homeless_by_sub <- HELPmiss %>% group_by(homeless,substance) %>%summarize(count 
 
 
 ```{r}
-# Your Code here.
+library(ggplot2)
+
+ggplot(HELPmiss) +
+ aes(x = age, y = homeless, colour = substance) +
+ geom_boxplot(fill = "#FFFFFF") +
+ scale_color_manual(values = c(alcohol = "#F8766D", cocaine = "#31B425", heroin = "#20AFEC", missing = "#FF61C3"
+ )) +
+ theme_gray() +
+ facet_wrap(vars(substance))
 
 ```
-
+This boxplot describes the relationship between age and homelessness for participants in the data set. It is color coded and faceted on substance to more easily separate which substance was used more often by homeless or housed individuals. Since there is one row of missing substance values, there is an incomplete graph on the bottom right quadrant. 
 
 
