@@ -87,26 +87,26 @@ malevsfemale <- HELPmiss %>% group_by(sex) %>%summarize(count = n(), detox_times
 
 ### homeless or not
 ```{r}
-#Your code here
+homeless <- HELPmiss %>% group_by(homeless) %>%summarize(count = n(), detox_times = sum(e2b, na.rm = TRUE), mtime = mean(daysanysub, na.rm = TRUE))
 
 ```
 
 
 ### substance
 ```{r}
-#Your code here
+substance <- HELPmiss %>% group_by(substance) %>%summarize(count = n(), detox_times = sum(e2b, na.rm = TRUE), mtime = mean(daysanysub, na.rm = TRUE))
 
 ```
 
 ### homeless versus housed broken down by sex
 ```{r}
-#Your code here
+homeless_by_sex <- HELPmiss %>% group_by(homeless,sex) %>% summarize(count = n(), detox_times = sum(e2b, na.rm = TRUE), mtime = mean(daysanysub, na.rm = TRUE))
 
 ```
 
 ### homeless versus housed broken down by substance
 ```{r}
-#Your code here
+homeless_by_sub <- HELPmiss %>% group_by(homeless,substance) %>%summarize(count = n(), detox_times = sum(e2b, na.rm = TRUE), mtime = mean(daysanysub, na.rm = TRUE))
 
 ```
 
